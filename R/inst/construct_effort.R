@@ -111,7 +111,11 @@ if(make.plot){
   dev.off()
 }
 
-
+#plot for Peter
+#png("C2_flights.png")
+#plot(Grid.rotate,col='lightgray')
+#lines(F.plot[[7]],col='red',lwd=2)
+#dev.off()
 
 for(ifl in 1:9){
   int=gIntersects(F.list[[ifl]],Grid,byid=TRUE)
@@ -136,7 +140,7 @@ for(ifl in 1:9){
   #for(i in 1:length(Row.index))Row.index[i]=which(F.list[[ifl]][["seg_id"]]==as.character(Length.df[i,"Fl"]))
 
   
-  Diam=280  #280 meter swath width for aero commander
+  Diam=470  #280 meter swath width for aero commander
   Length.df["area"]=Length.df[,"len"]*0.001*(Diam*.001)/625  #proportional area surveyed for each cell
   
   Effort[[ifl]]=Length.df[,c(2,4)]
