@@ -6,7 +6,7 @@ Type: Package
 LazyLoad: yes
 Author: P.B. Conn \email{paul.conn@@noaa.gov}
 Description: Code to conduct a simulation analysis of seal and polar bear count
-    data via instrumental based surveys in the Chukchi Sea
+    data via instrument-based surveys in the Chukchi Sea
 Version: 0.90
 Depends:
     sp,

@@ -64,7 +64,6 @@ for(isp in 1:2){
   CV[[isp]]=cbind(Model,CV[[isp]])
   Cov[[isp]]=cbind(Model,Cov[[isp]])
 }
-
 Model=c("seals","seals + samp.dens","stratum","stratum + samp.dens")
 isp=3
 Bias[[isp]]=cbind(Model,Bias[[isp]])
@@ -72,26 +71,7 @@ MSE[[isp]]=cbind(Model,MSE[[isp]])
 CV[[isp]]=cbind(Model,CV[[isp]])
 Cov[[isp]]=cbind(Model,Cov[[isp]])
 
-########################
-#previous polar bear results are for "seals" covariate which Eric R. didn't like
-# write over old results using "covariate models
-Model[1:2]=c("covs","covs + samp.dens")
-Bias[[isp]][,1]=MSE[[isp]][,1]=CV[[isp]][,1]=Cov[[isp]][,1]=Model
-Bias[[isp]][2,4:6]=MSE[[isp]][2,4:6]=CV[[isp]][2,4:6]=Cov[[isp]][2,4:6]=NA
 
-estimator="Mean"
-for(imod in 1:2){   
-  for(ifl in 3:9){
-    if(imod==1 | (imod==2 & ifl>5)){
-      Tmp=read.csv(paste("./sim_data/PB_hab_cov/OutPB_mod_",imod,"_isp_",isp,"Fl",ifl,".csv",sep=''),header=TRUE)
-      Bias[[isp]][imod,ifl+1]=median((Tmp[,estimator]-Lam.true[[isp]])/Lam.true[[isp]])
-      MSE[[isp]][imod,ifl+1]=sqrt(mean((Tmp[,estimator]-Lam.true[[isp]])^2))
-      CV[[isp]][imod,ifl+1]=median(Tmp[,"SE"]/Tmp[,estimator])
-      Cov[[isp]][imod,ifl+1]=mean((Lam.true[[isp]]>Tmp[,"Quant05"] & Lam.true[[isp]]<Tmp[,"Quant95"]))
-    }
-  }
-}
-######################
 
 Bias.table=xtable(rbind(Bias[[1]],Bias[[2]],Bias[[3]]))
 MSE.table=xtable(rbind(MSE[[1]],MSE[[2]],MSE[[3]]),digits=0)

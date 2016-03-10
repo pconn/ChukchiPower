@@ -11,20 +11,20 @@ AK_albers_proj <-paste("+proj=aea +lat_1=55 +lat_2=65 +lat_0=50 +lon_0=-154 +x_0
 Polar_stereo<-paste("+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs ")
 #Polar_stereo<-paste("+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-155 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs ")
 
-load('Grid_chukchi.Rda')
+load('./Grid_chukchi.Rda')
 #Grid=Grid.chukchi$Grid
-Grid=spTransform(Grid.chukchi$Grid,CRS(Polar_stereo))
+Grid=spTransform(Grid_chukchi$Grid,CRS(Polar_stereo))
 
 Area.hab=1-Grid[["land_cover"]]
 
-long1<-readShapeSpatial("./shapefiles/to_offshore_1",proj=CRS(AK_albers_proj))
+long1<-readShapeSpatial("././shapefiles/to_offshore_1",proj=CRS(AK_albers_proj))
 names(long1)=tolower(names(long1))
 n=length(long1)
-long2<-readShapeSpatial("./shapefiles/to_offshore_2",proj=CRS(AK_albers_proj))
+long2<-readShapeSpatial("././shapefiles/to_offshore_2",proj=CRS(AK_albers_proj))
 names(long2)=tolower(names(long2))
 long2<- spChFIDs(long2,as.character((n+1):(n+length(long2))))   #for all datasets after the first, need to come up with new line identifiers
 n=n+length(long2)
-short1<-readShapeSpatial("./shapefiles/to_coastal_1",proj=CRS(AK_albers_proj))
+short1<-readShapeSpatial("././shapefiles/to_coastal_1",proj=CRS(AK_albers_proj))
 names(short1)=tolower(names(short1))
 short1<- spChFIDs(short1,as.character((n+1):(n+length(short1))))   #for all datasets after the first, need to come up with new line identifiers
 n=n+length(short1)
@@ -32,7 +32,7 @@ short2<-readShapeSpatial("./shapefiles/to_coastal_2",proj=CRS(AK_albers_proj))
 names(short2)=tolower(names(short2))
 short2<- spChFIDs(short2,as.character((n+1):(n+length(short2))))   #for all datasets after the first, need to come up with new line identifiers
 n=n+length(short2)
-short3<-readShapeSpatial("./shapefiles/to_coastal_3",proj=CRS(AK_albers_proj))
+short3<-readShapeSpatial("././shapefiles/to_coastal_3",proj=CRS(AK_albers_proj))
 names(short3)=tolower(names(short3))
 short3<- spChFIDs(short3,as.character((n+1):(n+length(short3))))   #for all datasets after the first, need to come up with new line identifiers
 n=n+length(short3)
@@ -44,7 +44,7 @@ short2<-spTransform(short2,CRS(Polar_stereo))
 short3<-spTransform(short3,CRS(Polar_stereo))
 
 
-plot(Grid.chukchi$Grid)
+plot(Grid_chukchi$Grid)
 Grid=spChFIDs(Grid, as.character(c(1:length(Grid))))
 
 #formulate Mapping and area surveyed for each configuration
@@ -64,8 +64,8 @@ F.list[[9]]=spRbind(spRbind(long1[c(1,2,3,4,5,7),],short1),short3)
 
 make.plot=TRUE
 if(make.plot){
-  center=apply(bbox(Grid.chukchi$Grid), 1, mean) #gCentroid(Grid.chukchi$Grid)
-  Grid.rotate=elide(Grid.chukchi$Grid,rotate=-90,center=center)
+  center=apply(bbox(Grid_chukchi$Grid), 1, mean) #gCentroid(Grid.chukchi$Grid)
+  Grid.rotate=elide(Grid,rotate=-90,center=center)
   F.plot=F.list
   for(ifl in 1:9)F.plot[[ifl]]=elide(F.list[[ifl]],rotate=-90,center=center)  
   
@@ -85,7 +85,7 @@ if(make.plot){
   lines(F.plot[[3]],col='yellow',lwd=1.5)
   text(-2300000,1400000,"B1",cex=1.3)
   plot(Grid.rotate,col='darkgray')
-  lines(F.plot[[6]],col='green',lwd=1.5)
+  lines(F.plot[[6]],col='cyan',lwd=1.5)
   text(-2300000,1400000,"C1",cex=1.3)  
   plot(Grid.rotate,col='darkgray')
   lines(F.plot[[2]],col='white',lwd=1.5)
@@ -94,20 +94,55 @@ if(make.plot){
   lines(F.plot[[4]],col='yellow',lwd=1.5)
   text(-2300000,1400000,"B2",cex=1.3)  
   plot(Grid.rotate,col='darkgray')
-  lines(F.plot[[7]],col='green',lwd=1.5)
+  lines(F.plot[[7]],col='cyan',lwd=1.5)
   text(-2300000,1400000,"C2",cex=1.3)   
   frame()
   plot(Grid.rotate,col='darkgray')
   lines(F.plot[[5]],col='yellow',lwd=1.5)
   text(-2300000,1400000,"B3",cex=1.3)   
   plot(Grid.rotate,col='darkgray')
-  lines(F.plot[[8]],col='green',lwd=1.5)
+  lines(F.plot[[8]],col='cyan',lwd=1.5)
   text(-2300000,1400000,"C3",cex=1.3)  
   frame()
   frame()
   plot(Grid.rotate,col='darkgray')
-  lines(F.plot[[9]],col='green',lwd=1.5)  
+  lines(F.plot[[9]],col='cyan',lwd=1.5)  
   text(-2300000,1400000,"C4",cex=1.3) 
+  dev.off()
+  
+  setEPS()
+  postscript("sim_flights_Chukchi.eps")
+  par(mfrow=c(4,3),mar=c(0.1,0.1,0.1,0.1),mgp=c(0,0,0))
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[1]],col='white',lwd=1.5)
+  text(-2300000,1400000,"A1",cex=1.3)
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[3]],col='yellow',lwd=1.5)
+  text(-2300000,1400000,"B1",cex=1.3)
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[6]],col='cyan',lwd=1.5)
+  text(-2300000,1400000,"C1",cex=1.3)  
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[2]],col='white',lwd=1.5)
+  text(-2300000,1400000,"A2",cex=1.3) 
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[4]],col='yellow',lwd=1.5)
+  text(-2300000,1400000,"B2",cex=1.3)  
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[7]],col='cyan',lwd=1.5)
+  text(-2300000,1400000,"C2",cex=1.3)   
+  frame()
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[5]],col='yellow',lwd=1.5)
+  text(-2300000,1400000,"B3",cex=1.3)   
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[8]],col='cyan',lwd=1.5)
+  text(-2300000,1400000,"C3",cex=1.3)  
+  frame()
+  frame()
+  plot(Grid.rotate,col='darkgray')
+  lines(F.plot[[9]],col='cyan',lwd=1.5)  
+  text(-2300000,1400000,"C4",cex=1.3)   
   dev.off()
 }
 
